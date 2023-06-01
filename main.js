@@ -19,14 +19,19 @@ app.use(async (ctx, next) => {
       database: process.env.MYSQL_DATABASE
     });
 
-    con.connect(function(err) {
-      if (err) throw err;
+    const queryResult = await new Promise((resolve, reject) => {
       con.query("SELECT * FROM agency", function (err, result, fields) {
-        if (err) throw err;
-        ctx.body = result;
-        console.log(result);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+        con.end(); // Close the database connection
       });
     });
+
+    ctx.body = queryResult;
+    console.log(queryResult);
   } else {
     ctx.body = 'Hello';
   }
@@ -34,5 +39,7 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-const PORT = 5000;
-app.listen(process.env.PORT || 5000, console.log("Run: " + PORT));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log("Server is running on port " + PORT);
+});
