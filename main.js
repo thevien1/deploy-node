@@ -1,7 +1,6 @@
 const Koa = require("koa")
-const appKoa = new Koa()
+const app = new Koa()
 const express = require('express')
-const app = express()
 const cors = require('cors')
 const mysql = require('mysql');
 const dotenv = require('dotenv');
@@ -28,7 +27,7 @@ con.connect(function(err) {
     console.log(result);
   });
 });
-appKoa.use(async ctx =>{
+app.use(async ctx =>{
     ctx.body = 'Hello'
 })
 
