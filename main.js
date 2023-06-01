@@ -1,6 +1,6 @@
-const Koa = require("koa")
-const app = new Koa()
+
 const express = require('express')
+const app = express()
 const cors = require('cors')
 const mysql = require('mysql');
 const dotenv = require('dotenv');
