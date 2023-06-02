@@ -67,6 +67,7 @@ const getDepositHistory = () => {
 
 getDepositHistory()
   .then(depositHistory => {
+    ctx.body = depositHistory
     console.log(depositHistory);
   })
   .catch(error => {
