@@ -10,7 +10,7 @@ app.use(cors());
 const crypto = require('crypto');
 const axios = require('axios');
 
-const getDepositHistory = () => {
+const getDepositHistory = async () => {
   const apiKey = 'ehZHLTqpe5AyBCOIR73wnXtf4g7RZ0uYHOtak47RYT4OYnkLQsdueKmdNMI6abIc';
   const apiSecret = '8irmwfRrD7At6W91ny2rjIOqEVxDWUOJHPi0JiulE6oh0yg47AqXBo6bjQivYYih';
 
@@ -21,22 +21,15 @@ const getDepositHistory = () => {
   const headers = { 'X-MBX-APIKEY': apiKey };
   const params = { timestamp, signature };
 
-  return axios.get('https://api.binance.com/sapi/v1/capital/deposit/hisrec', { headers, params })
-    .then(response => response.data)
-    .catch(error => {
-      console.error('Yêu cầu không thành công:', error.response.status, error.response.data);
-      throw error;
-    });
+  try {
+    const response = await axios.get('https://api.binance.com/sapi/v1/capital/deposit/hisrec', { headers, params });
+    return response.data;
+  } catch (error) {
+    console.error('Yêu cầu không thành công:', error.response.status, error.response.data);
+    throw error;
+  }
 };
-getDepositHistory()
-  .then(depositHistory => {
 
-    console.log(depositHistory);
-    ctx.body = depositHistory
-  })
-  .catch(error => {
-    // Xử lý lỗi nếu cần
-  });
 app.use(async (ctx, next) => {
   if (ctx.path === "/binance") {
     ctx.body = "Hello world2";
@@ -62,15 +55,13 @@ app.use(async (ctx, next) => {
     ctx.body = queryResult;
     console.log(queryResult);
   } else {
-    ctx.body = 'Hello2';
-    getDepositHistory()
-  .then(depositHistory => {
-    ctx.body = depositHistory
-    console.log(depositHistory);
-  })
-  .catch(error => {
-    // Xử lý lỗi nếu cần
-  });
+    try {
+      const depositHistory = await getDepositHistory();
+      ctx.body = depositHistory;
+      console.log(depositHistory);
+    } catch (error) {
+      // Xử lý lỗi nếu cần
+    }
   }
 
   await next();
@@ -80,6 +71,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("Server is running on port " + PORT);
 });
-
-
-
