@@ -62,7 +62,7 @@ app.use(async (ctx, next) => {
     ctx.body = queryResult;
     console.log(queryResult);
   } else {
-    ctx.body = 'Hello';
+    ctx.body = 'Hello2';
     getDepositHistory()
   .then(depositHistory => {
     ctx.body = depositHistory
